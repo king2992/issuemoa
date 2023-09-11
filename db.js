@@ -9,6 +9,7 @@ const connection = mysql.createConnection({
   password: "Koreait1234!",
   database: "issuemoa",
   port: 3306,
+  connectTimeout: 10000,
   // ssl: {
   //   rejectUnauthorized: false,
   //   require: true,
