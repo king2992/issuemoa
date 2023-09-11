@@ -9,10 +9,10 @@ const connection = mysql.createConnection({
   password: "Koreait1234!",
   database: "issuemoa",
   port: 3306,
-  ssl: {
-    rejectUnauthorized: false,
-    require: true,
-  },
+  // ssl: {
+  //   rejectUnauthorized: false,
+  //   require: true,
+  // },
 });
 
 connection.connect((err) => {
