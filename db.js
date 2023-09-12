@@ -10,10 +10,10 @@ const connection = mysql.createConnection({
   database: "issuemoa",
   port: 3306,
   connectTimeout: 10000,
-  ssl: {
-    rejectUnauthorized: false,
-    require: true,
-  },
+//   ssl: {
+//     rejectUnauthorized: false,
+//     require: true,
+//   },
 });
 
 connection.connect((err) => {
