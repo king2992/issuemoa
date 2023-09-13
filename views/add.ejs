@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>이슈모아</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="/css/style.css">
+    <script src="/js/index.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/dropzone.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/dropzone.min.js"></script>
+    <style>
+        /* 드롭 영역 스타일 */
+        .drop-area {
+            border: 2px dashed #ccc;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+        }
+    
+        .drop-text {
+            font-size: 16px;
+            color: #777;
+        }
+    
+        .drag-over {
+            border-color: #2196F3; /* 드래그 중일 때의 스타일 */
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Modal -->
+    <div class="header-main-area ">
+        <div class="hm-container">
+            <div class="site-branding">
+                <div class="site-branding-content">
+                    <div class="hm-logo"></div>
+                    <div class="hm-site-title">
+                        <h1 class="site-title"><a href="http://ko.cic-school.com" rel="home">이슈모아</a></h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="hm-nav-container">
+        <nav id="site-navigation" class="main-navigation" role="navigation">
+            <div class="hm-container">
+                <div class="menu-%eb%a9%94%eb%89%b4-1-container">
+                    <ul id="primary-menu" class="menu">
+                        <li id="menu-item-90994"
+                            class="menu-item menu-item-type-post_type menu-item-object-page menu-item-home current-menu-item page_item page-item-90990 current_page_item menu-item-90994">
+                            <a href="http://ko.cic-school.com" aria-current="page">HOME</a>
+                        </li>
+                        <li id="menu-item-91003"
+                            class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-91003">
+                            <a href="#">이슈</a>
+                        </li>
+                        <li id="menu-item-90997"
+                            class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-90997">
+                            <a href="#">사건사고</a>
+                        </li>
+                        <li id="menu-item-90998"
+                            class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-90998">
+                            <a href="#">연예</a>
+                        </li>
+                        <li id="menu-item-90999"
+                            class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-90999">
+                            <a href="#">동물</a>
+                        </li>
+                        <li id="menu-item-91000"
+                            class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-91000">
+                            <a href="#">해외</a>
+                        </li>
+                        <li id="menu-item-91001"
+                            class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-91001">
+                            <a href="#">스포츠</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="hm-search-button-icon"></div>
+                <div class="hm-search-box-container">
+                    <div class="hm-search-box">
+                        <form role="search" method="get" class="search-form" action="http://dotori12.com/">
+                            <label>
+                                <span class="screen-reader-text">검색:</span>
+                                <input type="search" class="search-field" placeholder="검색 …" value="" name="s">
+                            </label>
+                            <input type="submit" class="search-submit" value="검색">
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </nav>
+        <div class="hm-nwrap">
+            <a href="#" class="navbutton" id="main-nav-button">
+                <span class="main-nav-btn-lbl">Main Menu</span> </a>
+        </div>
+        <div class="responsive-mainnav">
+            <div class="hm-nwrap">
+                <ul id="primary-menu" class="menu">
+                    <li id="menu-item-90994"
+                        class="menu-item menu-item-type-post_type menu-item-object-page menu-item-home current-menu-item page_item page-item-90990 current_page_item menu-item-90994">
+                        <a href="#" aria-current="page">HOME</a>
+                    </li>
+                    <li id="menu-item-91003"
+                        class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-91003"><a
+                            href="#">이슈</a></li>
+                    <li id="menu-item-90997"
+                        class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-90997"><a
+                            href="#">사건사고</a></li>
+                    <li id="menu-item-90998"
+                        class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-90998"><a
+                            href="#">연예</a></li>
+                    <li id="menu-item-90999"
+                        class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-90999"><a
+                            href="#">동물</a></li>
+                    <li id="menu-item-91000"
+                        class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-91000"><a
+                            href="#">해외</a></li>
+                    <li id="menu-item-91001"
+                        class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-91001"><a
+                            href="#">스포츠</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="hm-nwrap">
+                <ul id="primary-menu" class="menu">
+                    <li id="menu-item-90994"
+                        class="menu-item menu-item-type-post_type menu-item-object-page menu-item-home current-menu-item page_item page-item-90990 current_page_item menu-item-90994">
+                        <a href="#" aria-current="page">HOME</a>
+                    </li>
+                    <li id="menu-item-91003"
+                        class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-91003">
+                        <a href="#">이슈</a>
+                    </li>
+                    <li id="menu-item-90997"
+                        class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-90997">
+                        <a href="#">사건사고</a>
+                    </li>
+                    <li id="menu-item-90998"
+                        class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-90998">
+                        <a href="#">연예</a>
+                    </li>
+                    <li id="menu-item-90999"
+                        class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-90999">
+                        <a href="#">동물</a>
+                    </li>
+                    <li id="menu-item-91000"
+                        class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-91000">
+                        <a href="#">해외</a>
+                    </li>
+                    <li id="menu-item-91001"
+                        class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-91001">
+                        <a href="#">스포츠</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <section id="content" class="site-content">
+        <form ref='uploadForm' id='uploadForm' action='/upload' class="dropzone" method="post" enctype="multipart/form-data">
+            <div class="fallback">
+                <input type="file" name="files" multiple />
+            </div>
+            <div id="file-list-container">
+                <!-- 여기에 선택한 파일 목록이 표시됩니다. -->
+            </div>
+            <input type="text" name="title" placeholder="Enter your title" required>
+            <input type='submit' value='Upload!' />
+        </form>
+    </section>
+    <script>
+        Dropzone.options.uploadForm = {
+            paramName: "files", // 파일 파라미터 이름
+            maxFilesize: 10, // 파일 최대 크기 제한 (10MB)
+            parallelUploads: 5, // 병렬 업로드 수 (동시에 업로드할 파일 수)
+            acceptedFiles: "image/*", // 허용된 파일 유형 (이미지만 허용)
+            init: function () {
+                this.on("addedfile", function (file) {
+                    // 파일이 추가될 때 실행되는 함수
+                    // 여기에서 파일 목록을 업데이트할 수 있습니다.
+                    const fileListContainer = document.getElementById('file-list-container');
+                    const listItem = document.createElement('div');
+                    listItem.textContent = file.name;
+                    fileListContainer.appendChild(listItem);
+                });
+            }
+        };
+    </script>
+    
+
+    
+    
+    
+</body>
+
+</html>

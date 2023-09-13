@@ -46,36 +46,78 @@ app.listen(3000, () => {
     console.log(`Server is running on port 3000`);
 });
 
+// app.get('/', (req, res) => {
+//     // const data = readData();
+//     // res.render('index', { items: data });
+
+//     console.log("Request IP Address : " + requestIp.getClientIp(req));
+
+//     // 데이터베이스 조회 쿼리
+//     const query = `
+//                     SELECT
+//                         T1.board_id,
+//                         T1.title,
+//                         CONCAT(T2.file_path, '/', T2.file_save_nm) as file_src
+//                     FROM
+//                         issuemoa.board T1
+//                     LEFT JOIN
+//                         issuemoa.attach_file T2
+//                     ON
+//                         (T1.attach_id = T2.attach_id AND T2.attach_seq = 1)
+//                   `;
+
+
+
+//     connection.query(query, (queryErr, results) => {
+//         if (queryErr) {
+//             console.error("Error executing query:", queryErr);
+//             res.status(500).send("Internal Server Error");
+//             return;
+//         }
+
+//         // console.log("Database results:", results);
+//         res.render('index', { items: results });
+//     });
+// });
+
 app.get('/', (req, res) => {
-    // const data = readData();
-    // res.render('index', { items: data });
+    const page = parseInt(req.query.page) || 1; 
+    const itemsPerPage = 5; 
+    const offset = (page - 1) * itemsPerPage;
 
-    console.log("Request IP Address : " + requestIp.getClientIp(req));
-
-    // 데이터베이스 조회 쿼리
-    const query = `
-                    SELECT
-                        T1.board_id,
-                        T1.title,
-                        CONCAT(T2.file_path, '/', T2.file_save_nm) as file_src
-                    FROM
-                        issuemoa.board T1
-                    LEFT JOIN
-                        issuemoa.attach_file T2
-                    ON
-                        (T1.attach_id = T2.attach_id AND T2.attach_seq = 1)
-                  `;
-
-
-
-    connection.query(query, (queryErr, results) => {
-        if (queryErr) {
-            console.error("Error executing query:", queryErr);
-            res.status(500).send("Internal Server Error");
-            return;
+    // 먼저 전체 게시글의 수를 계산
+    const countQuery = "SELECT COUNT(*) as total FROM issuemoa.board T1";
+    connection.query(countQuery, (countErr, countResults) => {
+        if (countErr) {
+            console.error("Error executing count query:", countErr);
+            return res.status(500).send("Internal Server Error");
         }
+        
+        const totalItems = countResults[0].total;
+        const totalPages = Math.ceil(totalItems / itemsPerPage);
 
-        // console.log("Database results:", results);
-        res.render('index', { items: results });
+        // 페이징 적용하여 데이터 조회
+        const query = `
+            SELECT
+                T1.board_id,
+                T1.title,
+                CONCAT(T2.file_path, '/', T2.file_save_nm) as file_src
+            FROM
+                issuemoa.board T1
+            LEFT JOIN
+                issuemoa.attach_file T2
+            ON
+                (T1.attach_id = T2.attach_id AND T2.attach_seq = 1)
+            LIMIT ${itemsPerPage} OFFSET ${offset}
+        `;
+
+        connection.query(query, (queryErr, results) => {
+            if (queryErr) {
+                console.error("Error executing query:", queryErr);
+                return res.status(500).send("Internal Server Error");
+            }
+
+            res.render('index', { items: results, currentPage: page, totalPages: totalPages });
+        });
     });
 });
