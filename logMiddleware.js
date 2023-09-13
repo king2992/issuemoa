@@ -3,7 +3,12 @@ const requestIp = require('request-ip'); // 필요한 경우 외부 라이브러
 const connection = require('./db');
 
 function saveLogMiddleware(req, res, next) {
-    const userIp = requestIp.getClientIp(req);
+    let userIp = requestIp.getClientIp(req);
+
+    if (userIp.startsWith('::ffff:')) {
+        userIp = userIp.substring(7);
+    }
+
     const fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
 
     console.log("Request IP Address:", userIp);
