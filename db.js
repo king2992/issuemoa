@@ -18,7 +18,12 @@ const connection = mysql.createConnection({
 
 connection.connect((err) => {
   if (err) {
-    console.error("Error connecting to MySQL:", err);
+    console.error("Error connecting to MySQL:");
+    console.error("Error Code:", err.code);
+    console.error("Error Number:", err.errno);
+    console.error("SQL Message:", err.sqlMessage);
+    console.error("SQL State:", err.sqlState);
+    console.error("Is Fatal:", err.fatal);
   } else {
     console.log("Connected to MySQL database.");
   }
