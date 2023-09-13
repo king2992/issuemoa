@@ -9,7 +9,7 @@ function saveLogMiddleware(req, res, next) {
     console.log("Request IP Address:", userIp);
     console.log("Request URL:", fullUrl);
 
-    const logQuery = "INSERT INTO connect_log (connect_ip, url) VALUES(?, ?)";
+    const logQuery = "INSERT INTO connect_log (connect_ip, url, regist_dt) VALUES(?, ?, NOW())";
     connection.query(logQuery, [userIp, fullUrl], (logErr) => {
         if (logErr) {
             console.error("Error saving log:", logErr);
