@@ -4,11 +4,13 @@ const connection = require('../db');
 
 
 router.get('/boards/:id', (req, res) => {
+
     const boardId = req.params.id;
 
     const query = `
                     SELECT T1.board_id
                             , T1.title
+                            , DATE_FORMAT(T1.REGIST_DT, '%Y-%m-%d') AS regist_dt 
                             , CONCAT(T2.FILE_PATH, '/', T2.FILE_SAVE_NM) AS file_src
                         FROM issuemoa.board T1
                         LEFT JOIN issuemoa.attach_file T2
@@ -24,7 +26,7 @@ router.get('/boards/:id', (req, res) => {
             return;
         }
 
-        // console.log("Database results:", results);
+        console.log("Database results:", results);
         res.render('detail', { items: results });
     });
 

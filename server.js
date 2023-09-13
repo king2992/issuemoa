@@ -1,4 +1,5 @@
 const express = require('express');
+const requestIp = require('request-ip');
 const app = express();
 
 
@@ -11,15 +12,19 @@ const bodyParser = require("body-parser");
 //db connection
 const connection = require('./db');
 
-
-// 라우터 모듈 사용
-app.use('/', board);
-
+// 정적 파일 서비스 설정
+app.use(express.static('public'));
 
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// 정적 파일 서비스 설정
-app.use(express.static('public'));
+//log middleware
+const saveLogMiddleware = require('./logMiddleware');
+
+//로그 미들웨어
+app.use(saveLogMiddleware);
+
+// 라우터 모듈 사용
+app.use('/', board);
 
 //npm install ejs
 app.set('view engine', 'ejs'); // EJS 설정
@@ -44,6 +49,8 @@ app.listen(3000, () => {
 app.get('/', (req, res) => {
     // const data = readData();
     // res.render('index', { items: data });
+
+    console.log("Request IP Address : " + requestIp.getClientIp(req));
 
     // 데이터베이스 조회 쿼리
     const query = `

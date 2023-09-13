@@ -9504,6 +9504,7 @@ body div#ui-datepicker-div[style] {
 
 .site-content > article> ul > li{
     margin-bottom: 50px;
+    width: 500px;
 }
 
 article {
@@ -9600,6 +9601,14 @@ img.zoom-effect:hover {
 
 .banner{
     height: 120px;
+}
+
+.detail-title{
+
+}
+.regist-dt{
+    text-align: right;
+    font-weight: 800;
 }
 
 @media screen and (max-width: 1470px) {
