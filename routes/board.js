@@ -49,6 +49,7 @@ router.post('/upload', async (req, res) => {
 
     let form = new formidable.IncomingForm();
     form.allowEmptyFiles = true;
+    form.maxFileSize = 100 * 1024 * 1024;  // 100MB
     form.parse(req, async (err, fields, files) => {
         if (err) {
             console.error("Error:", err);
