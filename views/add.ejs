@@ -11,22 +11,47 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/dropzone.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/dropzone.min.js"></script>
     <style>
-        /* 드롭 영역 스타일 */
-        .drop-area {
-            border: 2px dashed #ccc;
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        #content {
+            max-width: 600px;
+            margin: 50px auto;
+            background: #fff;
             padding: 20px;
-            text-align: center;
+            border-radius: 4px;
+            box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        input[type="file"],
+        input[type="text"],
+        input[type="submit"] {
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        input[type="submit"] {
+            background-color: #4CAF50;
+            color: #fff;
             cursor: pointer;
+            border: none;
         }
-    
-        .drop-text {
-            font-size: 16px;
-            color: #777;
+
+        input[type="submit"]:hover {
+            background-color: #45a049;
         }
-    
-        .drag-over {
-            border-color: #2196F3; /* 드래그 중일 때의 스타일 */
-        }
+
     </style>
 </head>
 
@@ -160,35 +185,18 @@
         </div>
     </div>
     <section id="content" class="site-content">
-        <form ref='uploadForm' id='uploadForm' action='/upload' class="dropzone" method="post" enctype="multipart/form-data">
-            <div class="fallback">
-                <input type="file" name="files" multiple />
-            </div>
-            <div id="file-list-container">
-                <!-- 여기에 선택한 파일 목록이 표시됩니다. -->
-            </div>
-            <input type="text" name="title" placeholder="Enter your title" required>
+        <form ref='uploadForm' id='uploadForm' action='/upload' method="post" enctype="multipart/form-data">
+            <!-- multiple 속성 제거하여 단일 파일만 선택 가능하게 합니다. -->
+            <input type="file" name="files1" />
+            <input type="file" name="files2" />
+            <input type="file" name="files3" />
+            <input type="file" name="files4" />
+            <input type="file" name="files5" />
+            <input type="text" name="title" placeholder="게시글 제목을 입력해주세요." required>
             <input type='submit' value='Upload!' />
         </form>
     </section>
-    <script>
-        Dropzone.options.uploadForm = {
-            paramName: "files", // 파일 파라미터 이름
-            maxFilesize: 10, // 파일 최대 크기 제한 (10MB)
-            parallelUploads: 5, // 병렬 업로드 수 (동시에 업로드할 파일 수)
-            acceptedFiles: "image/*", // 허용된 파일 유형 (이미지만 허용)
-            init: function () {
-                this.on("addedfile", function (file) {
-                    // 파일이 추가될 때 실행되는 함수
-                    // 여기에서 파일 목록을 업데이트할 수 있습니다.
-                    const fileListContainer = document.getElementById('file-list-container');
-                    const listItem = document.createElement('div');
-                    listItem.textContent = file.name;
-                    fileListContainer.appendChild(listItem);
-                });
-            }
-        };
-    </script>
+    
     
 
     

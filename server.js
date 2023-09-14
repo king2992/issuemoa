@@ -108,6 +108,7 @@ app.get('/', (req, res) => {
                 issuemoa.attach_file T2
             ON
                 (T1.attach_id = T2.attach_id AND T2.attach_seq = 1)
+            ORDER BY T1.regist_dt DESC    
             LIMIT ${itemsPerPage} OFFSET ${offset}
         `;
 
@@ -116,7 +117,6 @@ app.get('/', (req, res) => {
                 console.error("Error executing query:", queryErr);
                 return res.status(500).send("Internal Server Error");
             }
-
             res.render('index', { items: results, currentPage: page, totalPages: totalPages });
         });
     });

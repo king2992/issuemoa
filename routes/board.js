@@ -2,23 +2,12 @@ const express = require('express');
 const router = express.Router();
 const connection = require('../db');
 
-const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
-
+const formidable = require('formidable');  // 추가된 부분
 const uuid4 = require('uuid4');
 
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, path.join(__dirname, '..', 'public', 'img', 'uploads'));
-    },
-    filename: function (req, file, cb) {
-        const safeName = encodeURIComponent(file.originalname);
-        cb(null, Date.now() + '-' + safeName);
-    }
-});
 
-const upload = multer({ storage: storage });
 
 router.get('/boards/add', (req, res)=>{
     res.render('add');
@@ -36,9 +25,9 @@ router.get('/boards/:id', (req, res) => {
                         FROM issuemoa.board T1
                         LEFT JOIN issuemoa.attach_file T2
                         ON (T1.ATTACH_ID = T2.ATTACH_ID)
-                        WHERE T1.ATTACH_ID = ${boardId}
+                        WHERE T1.board_id = ${boardId}
                     `;
-
+    console.log(query)
 
     connection.query(query, (queryErr, results) => {
         if (queryErr) {
@@ -53,51 +42,65 @@ router.get('/boards/:id', (req, res) => {
 
 });
 
-router.post('/upload', upload.array('files'), async (req, res) => {
-    const title = req.body.title; // 사용자가 입력한 제목을 가져옵니다.
-    const files = req.files; // 업로드된 파일 정보를 가져옵니다.
+router.post('/upload', async (req, res) => {
 
-    // 파일을 저장할 디렉토리 경로 설정
-    const uploadDir = path.join(__dirname, 'uploads');
+    const [countResults] = await connection.promise().query("SELECT MAX(attach_id) AS maxAttachId FROM issuemoa.attach_file");
+    const maxAttachId = countResults[0].maxAttachId + 1;
 
-    // 디렉토리가 없다면 생성
-    if (!fs.existsSync(uploadDir)) {
-        fs.mkdirSync(uploadDir);
-    }
+    let form = new formidable.IncomingForm();
+    form.allowEmptyFiles = true;
+    form.parse(req, async (err, fields, files) => {
+        if (err) {
+            console.error("Error:", err);
+            res.status(500).send("Internal Server Error");
+            return;
+        }
 
-    const countQuery = "SELECT MAX(attach_id) AS maxAttachId FROM issuemoa.attach_file";
+        const title = fields.title;
+        let uploadedFiles = Object.values(files);
+
+
+        //const uploadedFile = files.files[0];
+
+        for(let i = 0; i < uploadedFiles.length; i++){
+
+            let uploadedFile = uploadedFiles[i];
+
+            if (!uploadedFile) {
+                res.status(400).send("No file provided");
+                return;
+            }
     
-    try {
-        const [countResults] = await connection.promise().query(countQuery);
+            const uploadDir = path.join(__dirname, '..', 'public', 'img', 'uploads');
+    
+            if (!fs.existsSync(uploadDir)) {
+                fs.mkdirSync(uploadDir);
+            }
+    
+            const targetFilePath = path.join(uploadDir, uploadedFile[0].originalFilename);
+    
+            // 임시 파일을 지정한 위치로 이동합니다.
+            fs.renameSync(uploadedFile[0].filepath, targetFilePath);
+    
+            const insertFileQuery = `
+                                        INSERT INTO issuemoa.attach_file 
+                                        (attach_id, attach_seq, file_nm, file_save_nm, file_path) 
+                                        VALUES (?, ?, ?, ?, ?)
+                                    `;
+            const fileValues = [maxAttachId, (i+1), uploadedFile[0].originalFilename, uploadedFile[0].originalFilename, '/img/uploads'];
+            await connection.promise().query(insertFileQuery, fileValues);
+        }
 
-        const maxAttachId = countResults[0].maxAttachId + 1;
-        console.log("maxAttachId");
-        console.log(maxAttachId);
-
-        // 파일 처리 로직
-        files.forEach((file, index) => {
-            const fileName = Date.now() + '-' + file.originalname;
-            const randomID = uuid4();
-            const filePath = path.join(uploadDir, randomID);
-
-            // 파일을 서버에 저장
-            fs.writeFileSync(filePath, file.buffer);
-
-            // 파일 정보를 데이터베이스에 저장하거나 필요한 로직을 수행
-
-            console.log(`File ${index + 1}: ${fileName}`);
-        });
-
-        // 여기에서 데이터베이스에 저장하는 로직을 추가하세요.
-
-        console.log('Title:', title);
-
-        res.send('Files and title uploaded successfully.');
-    } catch (error) {
-        console.error("Error executing count query:", error);
-        res.status(500).send("Internal Server Error");
-    }
+        const insertBoardQuery = `INSERT INTO issuemoa.board(title, attach_id, regist_dt) VALUES(?, ?, now())`;
+        const boardValues = [title, maxAttachId];
+        await connection.promise().query(insertBoardQuery, boardValues);
+        res.send('File uploaded successfully');
+    });
 });
+
+
+
+
 
 
 
