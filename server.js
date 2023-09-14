@@ -7,7 +7,7 @@ const app = express();
 const board = require('./routes/board');
 
 //bodyparser
-const bodyParser = require("body-parser");
+//const bodyParser = require("body-parser");
 
 //db connection
 const connection = require('./db');
@@ -15,7 +15,7 @@ const connection = require('./db');
 // 정적 파일 서비스 설정
 app.use(express.static('public'));
 
-app.use(bodyParser.urlencoded({ extended: true }));
+//app.use(bodyParser.urlencoded({ extended: true }));
 
 //log middleware
 const saveLogMiddleware = require('./logMiddleware');

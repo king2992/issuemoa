@@ -5,7 +5,7 @@ const connection = require('../db');
 const path = require('path');
 const fs = require('fs');
 const formidable = require('formidable');  // 추가된 부분
-const uuid4 = require('uuid4');
+
 
 
 
@@ -46,8 +46,8 @@ router.post('/upload', async (req, res) => {
 
     const [countResults] = await connection.promise().query("SELECT MAX(attach_id) AS maxAttachId FROM issuemoa.attach_file");
     const maxAttachId = countResults[0].maxAttachId + 1;
-
-    let form = new formidable.IncomingForm();
+    
+    let form = new formidable.IncomingForm({allowEmptyFiles:true, minFileSize : 0});
     form.allowEmptyFiles = true;
     form.maxFileSize = 100 * 1024 * 1024;  // 100MB
     form.parse(req, async (err, fields, files) => {
@@ -62,34 +62,39 @@ router.post('/upload', async (req, res) => {
 
 
         //const uploadedFile = files.files[0];
-
         for(let i = 0; i < uploadedFiles.length; i++){
 
             let uploadedFile = uploadedFiles[i];
 
-            if (!uploadedFile) {
-                res.status(400).send("No file provided");
-                return;
+            console.log(uploadedFile[0].size)
+
+            if(uploadedFile[0].size != 0){
+                if (!uploadedFile) {
+                    res.status(400).send("No file provided");
+                    return;
+                }
+        
+                const uploadDir = path.join(__dirname, '..', 'public', 'img', 'uploads');
+        
+                if (!fs.existsSync(uploadDir)) {
+                    fs.mkdirSync(uploadDir);
+                }
+        
+                const targetFilePath = path.join(uploadDir, uploadedFile[0].originalFilename);
+                
+    
+    
+                // 임시 파일을 지정한 위치로 이동합니다.
+                fs.renameSync(uploadedFile[0].filepath, targetFilePath);
+        
+                const insertFileQuery = `
+                                            INSERT INTO issuemoa.attach_file 
+                                            (attach_id, attach_seq, file_nm, file_save_nm, file_path) 
+                                            VALUES (?, ?, ?, ?, ?)
+                                        `;
+                const fileValues = [maxAttachId, (i+1), uploadedFile[0].originalFilename, uploadedFile[0].originalFilename, '/img/uploads'];
+                await connection.promise().query(insertFileQuery, fileValues);
             }
-    
-            const uploadDir = path.join(__dirname, '..', 'public', 'img', 'uploads');
-    
-            if (!fs.existsSync(uploadDir)) {
-                fs.mkdirSync(uploadDir);
-            }
-    
-            const targetFilePath = path.join(uploadDir, uploadedFile[0].originalFilename);
-    
-            // 임시 파일을 지정한 위치로 이동합니다.
-            fs.renameSync(uploadedFile[0].filepath, targetFilePath);
-    
-            const insertFileQuery = `
-                                        INSERT INTO issuemoa.attach_file 
-                                        (attach_id, attach_seq, file_nm, file_save_nm, file_path) 
-                                        VALUES (?, ?, ?, ?, ?)
-                                    `;
-            const fileValues = [maxAttachId, (i+1), uploadedFile[0].originalFilename, uploadedFile[0].originalFilename, '/img/uploads'];
-            await connection.promise().query(insertFileQuery, fileValues);
         }
 
         const insertBoardQuery = `INSERT INTO issuemoa.board(title, attach_id, regist_dt) VALUES(?, ?, now())`;
