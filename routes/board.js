@@ -100,7 +100,8 @@ router.post('/upload', async (req, res) => {
         const insertBoardQuery = `INSERT INTO issuemoa.board(title, attach_id, regist_dt) VALUES(?, ?, now())`;
         const boardValues = [title, maxAttachId];
         await connection.promise().query(insertBoardQuery, boardValues);
-        res.send('File uploaded successfully');
+
+        res.render('index');
     });
 });
 
